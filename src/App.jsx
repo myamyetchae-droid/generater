@@ -1,26 +1,26 @@
 import { useEffect, useState } from 'react'
 import QrGenerator from './components/QrGenerator.jsx'
-import QrScanner from './components/QrScanner.jsx'
 import QrHistory from './components/QrHistory.jsx'
 
 const HISTORY_KEY = 'generater.history'
+const HISTORY_LIMIT = 5
 
 export default function App() {
   const [tab, setTab] = useState('generate')
   const [history, setHistory] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem(HISTORY_KEY)) ?? []
+      return (JSON.parse(localStorage.getItem(HISTORY_KEY)) ?? []).slice(0, HISTORY_LIMIT)
     } catch {
       return []
     }
   })
 
   useEffect(() => {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 50)))
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history))
   }, [history])
 
   const addToHistory = (entry) =>
-    setHistory((h) => [{ id: Date.now(), createdAt: Date.now(), ...entry }, ...h].slice(0, 50))
+    setHistory((h) => [{ id: Date.now(), createdAt: Date.now(), ...entry }, ...h].slice(0, HISTORY_LIMIT))
 
   const removeFromHistory = (id) => setHistory((h) => h.filter((e) => e.id !== id))
 
@@ -28,13 +28,12 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <h1>GenerateR</h1>
-        <p>Create and scan QR codes</p>
+        <p>Create QR codes</p>
       </header>
 
       <nav className="tabs">
         {[
           ['generate', 'Generate'],
-          ['scan', 'Scan'],
           ['history', `History (${history.length})`],
         ].map(([key, label]) => (
           <button
@@ -49,7 +48,6 @@ export default function App() {
 
       <main className="panel">
         {tab === 'generate' && <QrGenerator onGenerate={addToHistory} />}
-        {tab === 'scan' && <QrScanner />}
         {tab === 'history' && (
           <QrHistory items={history} onRemove={removeFromHistory} />
         )}

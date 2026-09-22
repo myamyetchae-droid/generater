@@ -283,53 +283,9 @@ button.primary:hover {
   color: var(--text);
 }
 
-.scanner {
-  max-width: 480px;
-  margin: 0 auto;
-}
-
-.reader {
-  width: 100%;
-  min-height: 160px;
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--bg);
-  margin-bottom: 1rem;
-}
-
-.reader video,
-.reader img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
 .file-btn {
   text-align: center;
   cursor: pointer;
-}
-
-.error {
-  color: #ff7b7b;
-}
-
-.result {
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
-
-.result h3 {
-  margin: 0 0 0.5rem;
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-
-.result code {
-  display: block;
-  word-break: break-all;
-  margin-bottom: 0.8rem;
 }
 
 .history {

@@ -1,6 +1,6 @@
 # GenerateR
 
-Create and scan QR codes — a React + Vite web app.
+Create QR codes — a React + Vite web app.
 
 ## Features
 
@@ -17,8 +17,7 @@ Create and scan QR codes — a React + Vite web app.
   - Foreground and background colors
   - Optional logo overlay in the center (EC level auto-set to H to keep it scannable)
 - **Download** as PNG or SVG
-- **Scan** QR codes with your device camera or by uploading an image file
-- **History** of generated codes stored in `localStorage` (keeps the last 50)
+- **History** of generated codes stored in `localStorage` (keeps the last 5)
 
 ## Getting started
 
@@ -28,8 +27,6 @@ npm run dev
 ```
 
 Then open the URL printed by Vite (default `http://localhost:5173`).
-
-> Camera scanning requires a secure context (HTTPS or `localhost`) and camera permission.
 
 ## Scripts
 
@@ -44,7 +41,6 @@ Then open the URL printed by Vite (default `http://localhost:5173`).
 - [React](https://react.dev) 19
 - [Vite](https://vite.dev)
 - [qrcode](https://www.npmjs.com/package/qrcode) — QR generation
-- [html5-qrcode](https://www.npmjs.com/package/html5-qrcode) — QR scanning
 
 ## Project structure
 
@@ -52,7 +48,6 @@ Then open the URL printed by Vite (default `http://localhost:5173`).
 src/
   components/
     QrGenerator.jsx   # QR code form, styling options, PNG/SVG download
-    QrScanner.jsx     # Camera + image-file scanning
     QrHistory.jsx     # Generated-code history list
   utils/
     qrPayload.js      # Builds QR payloads (WIFI:, mailto:, tel:, sms:, ...)
