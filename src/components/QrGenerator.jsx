@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import QRCode from 'qrcode'
 import { buildPayload } from '../utils/qrPayload.js'
+import { drawRoundedQr, roundedQrSvg } from '../utils/qrStyle.js'
 
 const TYPES = [
   ['text', 'Text'],
@@ -40,6 +41,7 @@ export default function QrGenerator({ onGenerate }) {
   const [fgColor, setFgColor] = useState('#000000')
   const [bgColor, setBgColor] = useState('#ffffff')
   const [level, setLevel] = useState('M')
+  const [moduleShape, setModuleShape] = useState('rounded')
   const [logo, setLogo] = useState(null)
   const [dataUrl, setDataUrl] = useState('')
   const [error, setError] = useState('')
@@ -82,7 +84,16 @@ export default function QrGenerator({ onGenerate }) {
     const t = setTimeout(async () => {
       try {
         const canvas = document.createElement('canvas')
-        await QRCode.toCanvas(canvas, payload, qrOpts)
+        if (moduleShape === 'rounded') {
+          drawRoundedQr(canvas, payload, {
+            width: size,
+            level,
+            fg: fgColor,
+            bg: bgColor,
+          })
+        } else {
+          await QRCode.toCanvas(canvas, payload, qrOpts)
+        }
         if (logo) {
           const img = await loadImage(logo)
           const ctx = canvas.getContext('2d')
@@ -112,7 +123,7 @@ export default function QrGenerator({ onGenerate }) {
       clearTimeout(t)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payload, qrOpts, logo, bgColor])
+  }, [payload, qrOpts, moduleShape, size, level, fgColor, logo, bgColor])
 
   const downloadPng = () => {
     const a = document.createElement('a')
@@ -122,8 +133,13 @@ export default function QrGenerator({ onGenerate }) {
   }
 
   const downloadSvg = async () => {
-    let svg = await QRCode.toString(payload, { ...qrOpts, type: 'svg' })
-    if (logo) {
+    let svg
+    if (moduleShape === 'rounded') {
+      svg = roundedQrSvg(payload, { level, fg: fgColor, bg: bgColor, logo })
+    } else {
+      svg = await QRCode.toString(payload, { ...qrOpts, type: 'svg' })
+    }
+    if (logo && moduleShape !== 'rounded') {
       const vb = Number(svg.match(/viewBox="0 0 (\d+)/)?.[1]) || 25
       const s = vb * 0.22
       const pad = s * 0.18
@@ -284,6 +300,18 @@ export default function QrGenerator({ onGenerate }) {
                 <option value="M">M (15%)</option>
                 <option value="Q">Q (25%)</option>
                 <option value="H">H (30%)</option>
+              </select>
+            </label>
+          </div>
+          <div className="row">
+            <label>
+              Module shape
+              <select
+                value={moduleShape}
+                onChange={(e) => setModuleShape(e.target.value)}
+              >
+                <option value="rounded">Rounded</option>
+                <option value="square">Square</option>
               </select>
             </label>
           </div>
